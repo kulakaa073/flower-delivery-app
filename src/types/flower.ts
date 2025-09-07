@@ -1,5 +1,3 @@
-import type { Pagination } from '.';
-
 export interface Flower {
   id?: string;
   name: string;

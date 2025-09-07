@@ -52,8 +52,15 @@ const slice = createSlice({
           state.items.push(...action.payload);
         }
       )
-      .addCase(fetchOrders.rejected, handleRejected);
+      .addCase(fetchOrders.rejected, handleRejected)
+      .addCase(createOrder.pending, handlePending)
+      .addCase(createOrder.fulfilled, (state, action: PayloadAction<Order>) => {
+        state.isLoading = false;
+        state.error = null;
+        state.items.push(action.payload);
+      })
+      .addCase(createOrder.rejected, handleRejected);
   },
 });
 
-export const shopsReducer = slice.reducer;
+export const ordersReducer = slice.reducer;

@@ -2,34 +2,46 @@ import type { RootState } from '../store';
 import { createSelector } from '@reduxjs/toolkit';
 
 export const selectShops = (state: RootState) => state.shops.shops;
-export const selectShopInventory = (state: RootState) =>
-  state.shops.shopInventory;
-export const selectPaginationDta = (state: RootState) => state.shops.pagination;
+export const selectCurrentShopId = (state: RootState) =>
+  state.shops.currentShopId;
 
-export const selectCurrentPageFlowers = createSelector(
+export const selectShopInventory = createSelector(
   [
-    (state: RootState) => state.flowers.items,
-    (state: RootState) => state.flowers.currentPage,
+    (state: RootState) => state.shops.inventories,
+    (_: RootState, shopId: string) => shopId,
   ],
-  (items, currentPage) => items[currentPage] || []
+  (inventories, shopId) => inventories[shopId]
 );
 
-export const selectIsPageLoaded = createSelector(
+export const selectCurrentShopInventory = createSelector(
   [
-    (state: RootState) => state.flowers.loadedPages,
-    (_: RootState, page: number) => page,
+    (state: RootState) => state.shops.inventories,
+    (state: RootState) => state.shops.currentShopId,
   ],
-  (loadedPages, page) => loadedPages.has(page)
+  (inventories, currentShopId) =>
+    currentShopId ? inventories[currentShopId] : null
 );
 
-export const selectPaginationInfo = createSelector(
-  [(state: RootState) => state.flowers],
-  flowers => ({
-    currentPage: flowers.currentPage,
-    totalPages: flowers.totalPages,
-    totalItems: flowers.totalItems,
-    perPage: flowers.perPage,
-    hasNextPage: flowers.currentPage < flowers.totalPages,
-    hasPreviousPage: flowers.currentPage > 1,
-  })
+export const selectShopFlowersPage = createSelector(
+  [
+    (state: RootState) => state.shops.inventories,
+    (_: RootState, shopId: string) => shopId,
+    (_: RootState, __: string, page: number) => page,
+  ],
+  (inventories, shopId, page) => {
+    const inventory = inventories[shopId];
+    return inventory?.items[page] || [];
+  }
+);
+
+export const selectIsShopPageLoaded = createSelector(
+  [
+    (state: RootState) => state.shops.inventories,
+    (_: RootState, shopId: string) => shopId,
+    (_: RootState, __: string, page: number) => page,
+  ],
+  (inventories, shopId, page) => {
+    const inventory = inventories[shopId];
+    return inventory ? inventory.loadedPages.has(page) : false;
+  }
 );

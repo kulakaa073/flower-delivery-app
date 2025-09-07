@@ -1,19 +1,31 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 import { fetchShops, fetchShopInventory } from './operations';
 
-import type { Shop } from '../../types/shop';
 import type { ShopInventoryResponse } from '../../types';
+import type { ShopsState, ShopInventoryState, Shop } from '../../types/shop';
 
-interface ShopsState {
-  shops: Shop[];
-  isLoading: boolean;
-  error: string | null;
-}
+const createEmptyInventoryState = (): ShopInventoryState => ({
+  items: {},
+  pagination: {
+    page: 1,
+    perPage: 10,
+    totalPages: 0,
+    hasPreviousPage: false,
+    hasNextPage: false,
+    totalItems: 0,
+  },
+  loading: false,
+  error: null,
+  loadedPages: new Set(),
+  lastUpdated: 0,
+});
 
 const initialState: ShopsState = {
   shops: [],
   isLoading: false,
   error: null,
+  inventories: {},
+  currentShopId: null,
 };
 
 const handlePending = (state: ShopsState) => {
@@ -32,12 +44,43 @@ const slice = createSlice({
   name: 'shops',
   initialState: initialState,
   reducers: {
-    setCurrentPage: (state, action) => {
-      state.shops.inventory.pagination.page = action.payload;
+    setCurrentShop: (state, action: PayloadAction<string>) => {
+      state.currentShopId = action.payload;
+      if (!state.inventories[action.payload]) {
+        state.inventories[action.payload] = createEmptyInventoryState();
+      }
     },
-    clearCache: state => {
-      state.shops.inventory = {};
-      state.loadedPages = new Set();
+    setCurrentPageForShop: (
+      state,
+      action: PayloadAction<{ shopId: string; page: number }>
+    ) => {
+      const { shopId, page } = action.payload;
+      if (!state.inventories[shopId]) {
+        state.inventories[shopId] = createEmptyInventoryState();
+      }
+      state.inventories[shopId].pagination.page = page;
+    },
+    clearInventoryForShop: (state, action: PayloadAction<string>) => {
+      const shopId = action.payload;
+      if (state.inventories[shopId]) {
+        state.inventories[shopId].items = {};
+        state.inventories[shopId].loadedPages = new Set();
+        state.inventories[shopId].lastUpdated = 0;
+      }
+    },
+    clearAllInventories: state => {
+      state.inventories = {};
+    },
+    clearStaleInventories: state => {
+      const fiveMinutesAgo = Date.now() - 5 * 60 * 1000;
+      Object.keys(state.inventories).forEach(shopId => {
+        const inventory = state.inventories[shopId];
+        if (inventory.lastUpdated < fiveMinutesAgo) {
+          inventory.items = {};
+          inventory.loadedPages = new Set();
+          inventory.lastUpdated = 0;
+        }
+      });
     },
   },
   extraReducers: builder => {
@@ -49,19 +92,44 @@ const slice = createSlice({
         state.shops = action.payload;
       })
       .addCase(fetchShops.rejected, handleRejected)
-      .addCase(fetchShopInventory.pending, handlePending)
-      .addCase(
-        fetchShopInventory.fulfilled,
-        (state, action: PayloadAction<ShopInventoryResponse>) => {
-          const { data, ...pagination } = action.payload;
-          state.isLoading = false;
-          state.error = null;
-          state.shopInventory = data;
-          state.pagination = pagination;
+      .addCase(fetchShopInventory.pending, (state, action) => {
+        const { shopId } = action.meta.arg;
+        if (!state.inventories[shopId]) {
+          state.inventories[shopId] = createEmptyInventoryState();
         }
-      )
-      .addCase(fetchShopInventory.rejected, handleRejected);
+        state.inventories[shopId].loading = true;
+        state.inventories[shopId].error = null;
+      })
+      .addCase(fetchShopInventory.fulfilled, (state, action) => {
+        const shopId = action.meta.arg.shopId;
+        const { data, ...pagination } = action.payload as ShopInventoryResponse;
+        const inventory = state.inventories[shopId];
+        if (inventory) {
+          inventory.items[pagination.page] = data;
+          inventory.loadedPages.add(pagination.page);
+          inventory.pagination = pagination;
+          inventory.loading = false;
+          inventory.error = null;
+          inventory.lastUpdated = Date.now();
+        }
+      })
+      .addCase(fetchShopInventory.rejected, (state, action) => {
+        const { shopId } = action.meta.arg;
+        const inventory = state.inventories[shopId];
+        if (inventory) {
+          inventory.loading = false;
+          inventory.error = action.payload ?? 'Failed to load inventory';
+        }
+      });
   },
 });
+
+export const {
+  setCurrentShop,
+  setCurrentPageForShop,
+  clearInventoryForShop,
+  clearAllInventories,
+  clearStaleInventories,
+} = slice.actions;
 
 export const shopsReducer = slice.reducer;

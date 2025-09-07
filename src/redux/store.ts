@@ -12,16 +12,20 @@ import {
 } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import { shopsReducer } from './shops/slice';
+import { ordersReducer } from './orders/slice';
+import { usersReducer } from './user/slice';
+import { couponsReducer } from './coupons/slice';
 
-const authPersistConfig = { key: 'auth', storage, whitelist: ['token'] };
+const userPersistConfig = { key: 'user', storage };
 
-const authPersistReducer = persistReducer(authPersistConfig, authReducer);
+const userPersistReducer = persistReducer(userPersistConfig, usersReducer);
 
 export const store = configureStore({
   reducer: {
     shops: shopsReducer,
-    contacts: contactsReducer,
-    filters: filtersReducer,
+    orders: ordersReducer,
+    user: userPersistReducer,
+    coupons: couponsReducer,
   },
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({

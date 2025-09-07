@@ -1,8 +1,10 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import type { Shop } from '../../types/shop';
 import type { RequestQuery, ShopInventoryResponse } from '../../types';
-
+import type { RootState } from '../store';
 import api from '../../utils/axiosUtils';
+import { selectIsShopPageLoaded } from './selectors';
+import { setCurrentPageForShop } from './slice';
 
 export const fetchShops = createAsyncThunk<
   Shop[], // payload return type
@@ -43,5 +45,25 @@ export const fetchShopInventory = createAsyncThunk<
       }
       return thunkAPI.rejectWithValue(String(error));
     }
+  }
+);
+
+export const fetchFlowersPageSmart = createAsyncThunk<
+  void,
+  { query: RequestQuery; shopId: string; phone: string; email: string },
+  { rejectValue: string }
+>(
+  'flowers/fetchPageSmart',
+  async ({ query, shopId, phone, email }, thunkAPI) => {
+    const state = thunkAPI.getState() as RootState;
+    const isPageLoaded = selectIsShopPageLoaded(state, shopId, query.page);
+
+    if (!isPageLoaded) {
+      await thunkAPI.dispatch(
+        fetchShopInventory({ query, shopId, phone, email })
+      );
+    }
+
+    thunkAPI.dispatch(setCurrentPageForShop({ shopId, page: query.page }));
   }
 );
