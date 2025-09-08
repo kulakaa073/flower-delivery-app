@@ -1,8 +1,11 @@
 export interface OrderedFlower {
-  flowerId: string;
+  _id: string;
   count: number;
   priceAtPurchase: number;
-  id?: string;
+}
+
+export interface NamedOrderedFlower extends OrderedFlower {
+  name: string;
 }
 
 export interface Order {
@@ -13,6 +16,15 @@ export interface Order {
   shopId: string;
   userId: string;
   createdAt?: Date;
+}
+
+export interface NewOrder {
+  items: Array<NamedOrderedFlower>;
+  total: number;
+  deliveryAddress: string;
+  shopId: string;
+  email: string;
+  phone: string;
 }
 
 export interface CreateOrderRequest {

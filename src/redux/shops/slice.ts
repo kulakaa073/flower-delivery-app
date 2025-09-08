@@ -8,7 +8,7 @@ const createEmptyInventoryState = (): ShopInventoryState => ({
   items: {},
   pagination: {
     page: 1,
-    perPage: 10,
+    perPage: 9,
     totalPages: 0,
     hasPreviousPage: false,
     hasNextPage: false,
@@ -16,7 +16,7 @@ const createEmptyInventoryState = (): ShopInventoryState => ({
   },
   loading: false,
   error: null,
-  loadedPages: new Set(),
+  loadedPages: [],
   lastUpdated: 0,
 });
 
@@ -64,7 +64,7 @@ const slice = createSlice({
       const shopId = action.payload;
       if (state.inventories[shopId]) {
         state.inventories[shopId].items = {};
-        state.inventories[shopId].loadedPages = new Set();
+        state.inventories[shopId].loadedPages = [];
         state.inventories[shopId].lastUpdated = 0;
       }
     },
@@ -77,7 +77,7 @@ const slice = createSlice({
         const inventory = state.inventories[shopId];
         if (inventory.lastUpdated < fiveMinutesAgo) {
           inventory.items = {};
-          inventory.loadedPages = new Set();
+          inventory.loadedPages = [];
           inventory.lastUpdated = 0;
         }
       });
@@ -106,7 +106,9 @@ const slice = createSlice({
         const inventory = state.inventories[shopId];
         if (inventory) {
           inventory.items[pagination.page] = data;
-          inventory.loadedPages.add(pagination.page);
+          if (!inventory.loadedPages.includes(pagination.page)) {
+            inventory.loadedPages.push(pagination.page);
+          }
           inventory.pagination = pagination;
           inventory.loading = false;
           inventory.error = null;

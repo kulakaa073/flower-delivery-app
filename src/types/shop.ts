@@ -18,7 +18,7 @@ export interface ShopInventoryState {
   pagination: Pagination;
   loading: boolean;
   error: string | null;
-  loadedPages: Set<number>;
+  loadedPages: number[];
   lastUpdated: number;
 }
 

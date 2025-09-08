@@ -30,12 +30,18 @@ export const fetchShopInventory = createAsyncThunk<
   'shops/fetchShopInventory',
   async ({ query, shopId, phone, email }, thunkAPI) => {
     try {
+      const queryParams = new URLSearchParams({
+        page: query.page.toString(),
+        perPage: query.perPage.toString(),
+        sortBy: query.sortBy,
+        sortOrder: query.sortOrder,
+      });
+
       const response = await api.post<ShopInventoryResponse>(
-        `shops/${shopId}/flowers`,
+        `shops/${shopId}/flowers?${queryParams.toString()}`,
         {
-          phone,
-          email,
-          params: query,
+          phone: phone || undefined,
+          email: email || undefined,
         }
       );
       return response;

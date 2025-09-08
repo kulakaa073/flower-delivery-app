@@ -22,6 +22,8 @@ export const selectCurrentShopInventory = createSelector(
     currentShopId ? inventories[currentShopId] : null
 );
 
+const emptyArray: [] = [];
+
 export const selectShopFlowersPage = createSelector(
   [
     (state: RootState) => state.shops.inventories,
@@ -30,7 +32,23 @@ export const selectShopFlowersPage = createSelector(
   ],
   (inventories, shopId, page) => {
     const inventory = inventories[shopId];
-    return inventory?.items[page] || [];
+    if (!inventory) return emptyArray;
+
+    const pageItems = inventory.items[page];
+    return pageItems || emptyArray;
+  }
+);
+
+const emptyPagination = {};
+
+export const selectShopPagination = createSelector(
+  [
+    (state: RootState) => state.shops.inventories,
+    (_: RootState, shopId: string) => shopId,
+  ],
+  (inventories, shopId) => {
+    const inventory = inventories[shopId];
+    return inventory?.pagination || emptyPagination;
   }
 );
 
@@ -42,8 +60,11 @@ export const selectIsShopPageLoaded = createSelector(
   ],
   (inventories, shopId, page) => {
     const inventory = inventories[shopId];
-    return inventory ? inventory.loadedPages.has(page) : false;
+    return inventory ? inventory.loadedPages.includes(page) : false;
   }
 );
 
 export const selectIsShopsLoading = (state: RootState) => state.shops.isLoading;
+
+export const selectIsFlowersLoading = (state: RootState, shopId: string) =>
+  state.shops.inventories[shopId]?.loading ?? false;
