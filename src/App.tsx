@@ -17,11 +17,11 @@ export const App = () => {
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route index element={<HomePage />} />
-          <Route path="cart" element={<ShoppingCartPage />} />
-          <Route path="order" element={<CreateOrderPage />} />
-          <Route path="order/:orderId" element={<OrderDetailsPage />} />
-          <Route path="order/history" element={<OrdersHistoryPage />} />
-          <Route path="coupons" element={<CouponsPage />} />
+          <Route path="/cart" element={<ShoppingCartPage />} />
+          <Route path="/order" element={<CreateOrderPage />} />
+          <Route path="/order/:orderId" element={<OrderDetailsPage />} />
+          <Route path="/order/history" element={<OrdersHistoryPage />} />
+          <Route path="/coupons" element={<CouponsPage />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Route>
       </Routes>

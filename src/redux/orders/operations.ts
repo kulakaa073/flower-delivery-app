@@ -23,7 +23,7 @@ export const fetchOrders = createAsyncThunk<
   Order[], // payload return type
   { phone?: string; email?: string }, // argument type
   { rejectValue: string } // reject type
->('orders/fetchOrderById', async (userData, thunkAPI) => {
+>('orders/fetchOrders', async (userData, thunkAPI) => {
   try {
     const response = await api.post<Order[]>(`orders`, userData);
     return response;
