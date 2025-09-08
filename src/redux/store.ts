@@ -17,13 +17,15 @@ import { usersReducer } from './user/slice';
 import { couponsReducer } from './coupons/slice';
 
 const userPersistConfig = { key: 'user', storage };
+const ordersPersistConfig = { key: 'order', storage, whitelist: ['newOrder'] };
 
 const userPersistReducer = persistReducer(userPersistConfig, usersReducer);
+const ordersPersistReducer = persistReducer(ordersPersistConfig, ordersReducer);
 
 export const store = configureStore({
   reducer: {
     shops: shopsReducer,
-    orders: ordersReducer,
+    orders: ordersPersistReducer,
     user: userPersistReducer,
     coupons: couponsReducer,
   },

@@ -10,22 +10,20 @@ Base
 - Display flowers with option to add to cart. +
 - Create Shopping Cart Page: +
 - Show added products with quantity & price. +
-- Allow removing items and updating quantity.
+- Allow removing items and updating quantity. // no uantity update yet
 - Add form inputs: email, phone, address. +
 - "Submit" button sends order to backend. +
 
 Middle
 
-- Add sorting on Flower Shops page (by price/date).
+- Add sorting on Flower Shops page (by price/date). +
 - Add favorites feature:
 - Mark/unmark bouquets.
 - Show favorites first when sorting. +
-- Persist cart in localStorage.
-- On order creation, send date & time in user's timezone. // not needed, since
-  backend saves time in UTC
-- Create Order Details Page:
-- Show order id, products, total price, address, datetime (converted to user's
-  timezone).
+- Persist cart in localStorage. +
+- On order creation, send date & time in user's timezone. // not needed, since backend saves time in UTC
+- Create Order Details Page: +
+- Show order id, products, total price, address, datetime (converted to user's timezone). +
 
 Advanced
 

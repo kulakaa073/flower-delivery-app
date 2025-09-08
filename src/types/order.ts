@@ -9,7 +9,7 @@ export interface NamedOrderedFlower extends OrderedFlower {
 }
 
 export interface Order {
-  id?: string;
+  _id?: string;
   items: Array<OrderedFlower>;
   total: number;
   deliveryAddress: string;

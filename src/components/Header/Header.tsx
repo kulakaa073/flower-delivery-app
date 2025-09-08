@@ -20,13 +20,6 @@ export const Header = () => {
           </Button>
         </Box>
       </Toolbar>
-      <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
-        <Box>
-          <Button color="inherit">Sort by price</Button>
-          <Button color="inherit">Sort by date added</Button>
-          <Button color="inherit">Ascending</Button>
-        </Box>
-      </Toolbar>
     </AppBar>
   );
 };

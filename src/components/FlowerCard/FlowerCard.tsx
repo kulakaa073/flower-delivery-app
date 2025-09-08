@@ -25,7 +25,7 @@ export const FlowerCard = ({ item }: FlowerCardProps) => {
 
   const handleAddToCart = () => {
     const ordered: NamedOrderedFlower = {
-      _id: item._id,
+      flowerId: item._id,
       name: item.name,
       count: 1,
       priceAtPurchase: item.price,

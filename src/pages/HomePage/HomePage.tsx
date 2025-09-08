@@ -29,6 +29,7 @@ import type { RootState } from '../../redux/store';
 import { useSearchParams } from 'react-router';
 import type { RequestQuery } from '../../types';
 import { selectUserData } from '../../redux/user/selectors';
+import { SortingBar } from '../../components/SortingBar/SortingBar';
 
 export const HomePage = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -106,6 +107,7 @@ export const HomePage = () => {
 
   return (
     <Grid container spacing={3}>
+      <SortingBar />
       <Grid size={{ xs: 12, md: 3 }}>
         <Paper sx={{ p: 2, maxHeight: 400, overflowY: 'auto' }}>
           <Typography variant="h6">Shops</Typography>

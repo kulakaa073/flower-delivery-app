@@ -88,7 +88,7 @@ export const ShoppingCartPage = () => {
       setStatus({ type: 'success', message: 'Order created successfully!' });
       resetForm();
 
-      navigate(`/orders/${response.id}`);
+      navigate(`/orders/${response._id}`);
     } catch (error) {
       setStatus({
         type: 'error',
@@ -111,12 +111,12 @@ export const ShoppingCartPage = () => {
         )}
         {orderData.items.map(item => (
           <ListItem
-            key={item._id}
+            key={item.flowerId}
             secondaryAction={
               <IconButton
                 edge="end"
                 aria-label="delete"
-                onClick={() => handleRemoveItem(item._id)}
+                onClick={() => handleRemoveItem(item.flowerId)}
               >
                 <DeleteIcon />
               </IconButton>
