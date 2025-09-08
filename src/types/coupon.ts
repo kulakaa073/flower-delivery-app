@@ -1,5 +1,5 @@
 export interface Coupon {
-  id?: string;
+  _id: string;
   code: string;
   discountType: 'percent' | 'fixed';
   discountValue: number;

@@ -45,3 +45,5 @@ export const selectIsShopPageLoaded = createSelector(
     return inventory ? inventory.loadedPages.has(page) : false;
   }
 );
+
+export const selectIsShopsLoading = (state: RootState) => state.shops.isLoading;

@@ -1,5 +1,5 @@
 export interface Flower {
-  id?: string;
+  _id: string;
   name: string;
   imageUrl: string;
   price: number;

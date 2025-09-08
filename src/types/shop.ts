@@ -7,7 +7,7 @@ export interface Location {
 }
 
 export interface Shop {
-  id?: string;
+  _id: string;
   name: string;
   address: string;
   location: Location;
