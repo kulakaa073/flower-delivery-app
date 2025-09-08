@@ -7,7 +7,7 @@ export const selectOrderById = createSelector(
     (state: RootState) => state.orders.items,
     (_: RootState, orderId: string) => orderId,
   ],
-  (orders, orderId) => orders.find(item => item.id === orderId) || null
+  (orders, orderId) => orders.find(item => item._id === orderId) || null
 );
 export const selectOrdersIsLoading = (state: RootState) =>
   state.orders.isLoading;
