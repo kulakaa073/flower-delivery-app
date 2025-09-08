@@ -51,7 +51,7 @@ const slice = createSlice({
       }
 
       const existing = state.newOrder.items.find(
-        item => item._id === flower._id
+        item => item.flowerId === flower.flowerId
       );
 
       if (existing) {
@@ -68,7 +68,7 @@ const slice = createSlice({
 
     removeItemFromOrder: (state, action: PayloadAction<string>) => {
       state.newOrder.items = state.newOrder.items.filter(
-        item => item._id !== action.payload
+        item => item.flowerId !== action.payload
       );
 
       state.newOrder.total = state.newOrder.items.reduce(

@@ -1,5 +1,5 @@
 export interface OrderedFlower {
-  _id: string;
+  flowerId: string;
   count: number;
   priceAtPurchase: number;
 }
